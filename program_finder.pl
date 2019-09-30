@@ -268,7 +268,7 @@ makecode(FunctionName,Header1,TypeStatements1,TypeStatements2,Header2,Header3,He
                         [[n,equals2],List3],
 			TypeStatements2,
                         [[n,append],[[v,inputs3],[v,item1],[v,item2]]], %% brackets here in new lpi
-			[[n,equals2],List4], %% equals2 ?
+			[[n,equals2],List4],
 			[[n,append],[[v,extras1],[v,item3],[v,extras2]]],
                         [FunctionName,[[v,tail],[v,inputs2],[v,item2],[v,output]]
 ]
