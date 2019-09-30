@@ -15,13 +15,11 @@ Please download and install SWI-Prolog for your machine at https://www.swi-prolo
 
 * Download the repository to your machine.
 In the SWI-Prolog environment, enter the following to load the algorithm:
-`['programfinder2'].`
-`['listprologinterpreter3preds3'].`
-`['listprologinterpreter1listrecursion2 copy 32'].`
+`['programfinder'].`
 
 * Running the algorithm
 To generate an algorithm:
-`Input1=[[n,a]],Inputs2=[[a,5]],Output=[[n,5]],programfinder(Input1,Inputs2,Output,Extras,Program),writeln(Program),interpret(off,[function,[Input1,Inputs2,[],result]],Program,Result).`    
+`Input1=[["n","a"]],Inputs2=[["a",5]] ,Output=[["n", 5]] ,programfinder(Input1,Inputs2,Output,Extras,Program),writeln(Program),interpret(on,[[n,function],[Input1,Inputs2,[],[v,result]]],Program,Result).`    
 
 # Versioning
 

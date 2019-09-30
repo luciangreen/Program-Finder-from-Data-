@@ -4,33 +4,40 @@
 
 Also load interpret.
 
-
+*** BEFORE
 ?- Input1=[[n,a]],Inputs2=[[a,5]] ,Output=[[n, 5]] ,programfinder(Input1,Inputs2,Output,Extras,Program),writeln(Program),interpret(off,[function,[Input1,Inputs2,[],result]],Program,Result).
 [[function,[[],inputs2,output,output]],[function,[input1,inputs2,inputs3,output],:-,[[head,input1,head],[tail,input1,tail],[head=[a,b]],[[atom,a],[atom,b]],[member,inputs21,inputs2],[inputs21=[b,c]],[item1=[a,c]],[append,inputs3,item1,item2],[function,[tail,inputs2,item2,output]]]]]
 Input1 = [[n, a]],
 Inputs2 = [[a, 5]],
 Output = [[n, 5]],
 Extras = [],
-Program = [function,[Input1,Inputs2,[],result]],Program,Result).
-[[function,[[],inputs2,output,output]],[function,[input1,inputs2,inputs3,output],:-,[[head,input1,head],[tail,input1,tail],[head=[a,b]],[[atom,a],[atom,b]],[member,inputs21,inputs2],[inputs21=[b,c]],[item1=[a,c]],[append,inputs3,item1,item2],[function,[tail,inputs2,item2,output]]]]],
+Program = [[function,[[],inputs2,output,output]],[function,[input1,inputs2,inputs3,output],:-,[[head,input1,head],[tail,input1,tail],[head=[a,b]],[[atom,a],[atom,b]],[member,inputs21,inputs2],[inputs21=[b,c]],[item1=[a,c]],[append,inputs3,item1,item2],[function,[tail,inputs2,item2,output]]]]],
 Result = [[result, [n, 5]]] 
+
+** AFTER
+
+Input1=[[n,a]],Inputs2=[[a,5]] ,Output=[[n, 5]] ,programfinder(Input1,Inputs2,Output,Extras,Program),writeln(Program),interpret(off,[[n,function],[Input1,Inputs2,[],[v,result]]],Program,Result).
+[[[n,function],[[],[v,inputs2],[v,output],[v,output]]],[[n,function],[[v,input1],[v,inputs2],[v,inputs3],[v,output]],:-,[[[n,head],[[v,input1],[v,head]]],[[n,tail],[[v,input1],[v,tail]]],[[n,=],[[v,head],[[v,a],[v,b]]]],[[[n,atom],[v,a]],[[n,atom],[v,b]]],[[n,member],[[v,inputs21],[v,inputs2]]],[[n,=],[[v,inputs21],[[v,b],[v,c]]]],[[[n,number],[v,c]]],[[n,=],[[v,item1],[[v,a],[v,c]]]],[[n,append],[[v,inputs3],[v,item1],[v,item2]]],[[n,function],[[v,tail],[v,inputs2],[v,item2],[v,output]]]]]]
+Input1 = [[n, a]],
+Inputs2 = [[a, 5]],
+Output = [[n, 5]],
+Extras = Result, Result = [],
 
 **/
 
 programfinder(Input1,Inputs2,Output,Extras,Program) :-
-	labelall(Inputs2,inputs2,1,[],Inputs2Labels),
+	labelall(Inputs2,inputs2,1,1,[],Inputs2Labels),
 %%writeln([inputs2Labels,Inputs2Labels]),
 	label(Extras,extras,1,1,[],ExtrasLabels),
 %%writeln([extrasLabels,ExtrasLabels]),
 %%	Inputs2=[Item|_Items],
-%%	((length(Item,1),Extra=[])-> %% () is2 has 1-length tuples - then processes i1, is2 simultanenously
+%%	((length(Item,1),Extra=[])-> %% () is2 has 1-length tuples - then processes i1, is2 simultaneously
 %%	replace1is2(Input1,Inputs2,Output,Program);
-writeln([replace,"Input1",Input1,"Output",Output,"Inputs2Labels",Inputs2Labels,"ExtrasLabels",ExtrasLabels]),
 	replace(Input1,Output,Inputs2Labels,ExtrasLabels,[],Relations1), %% replace returns the relations for given input for a replacement
-writeln([replace,"Relations1",Relations1]),
+%%writeln([relations1,Relations1]),
         deleteduplicates(Relations1,[],Relations2),
 %%writeln([relations2,Relations2]),
-	FunctionName=function,
+	FunctionName=[n,function],
 	(not(member([extrarelation,_,_,_,_,_],Relations2))->
 	makebasecase(FunctionName,BaseCase);
         makebasecase2(FunctionName,BaseCase)),
@@ -52,31 +59,26 @@ replace(Input1,Output1,Inputs2Labels,ExtrasLabels,Relations1,Relations2) :-
         ((atom(Output1);number(Output1))->Output1a=[Output1];Output1a=Output1),
 	Output1a=[Item2|Items2], %% record what we need to give to output, then give it in a clause acc considerations
 	label(Item1,input1,1,1,[],Input1Labels),
-writeln([label,"Item1",Item1,"Input1Labels",Input1Labels]),
 	label(Item2,output,1,1,[],OutputLabels), %% find position, type of values, (will find identicalness)
-writeln([label,"Item2",Item2,"OutputLabels",OutputLabels]),
-writeln([relations1,"Inputs2Labels",Inputs2Labels,"ExtrasLabels",ExtrasLabels,"Relations1",Relations1]),
 	relations1(Input1Labels,OutputLabels,Inputs2Labels,ExtrasLabels,Relations1,Relations3), %% find rel types, which case extra/findargs relates to
-writeln([relations1,"Relations3",Relations3]),
 %% ExtrasLabels later
 %% return option config from rep, type config in extras, extras with relations
-writeln([replace,"Items1",Items1,"Items2",Items2,"Inputs2Labels",Inputs2Labels,"ExtrasLabels",ExtrasLabels,"Relations3",Relations3]),
 	replace(Items1,Items2,Inputs2Labels,ExtrasLabels,Relations3,Relations2).
 	
-labelall([],_Range,_ListItemNumber,Labels,Labels).
-labelall(Data1,Range,ListItemNumber,Labels1,Labels2) :-
+labelall([],_Range,_ListItemNumber,_Position,Labels,Labels).
+labelall(Data1,Range,ListItemNumber,Position1,Labels1,Labels2) :-
 	Data1=[Data2|Data3],
-	label(Data2,Range,ListItemNumber,1,Labels1,Labels3),
-	ListItemNumber1 is ListItemNumber + 1,
-	labelall(Data3,Range,ListItemNumber1,Labels3,Labels2).
+	label(Data2,Range,ListItemNumber,Position1,Labels1,Labels3),
+	Position2 is Position1 + 1,
+	labelall(Data3,Range,ListItemNumber,Position2,Labels3,Labels2).
 label([],_Range,_ItemNumber,_Position,ItemLabels,ItemLabels).
 label(Item1,Range,ItemNumber,Position1,ItemLabels1,ItemLabels2) :-
 	((atom(Item1);number(Item1))->Item1a=[Item1];Item1a=Item1),
 	Item1a=[Item2|Items], %% removed [] from i1
-	((atom(Item2),Type=atom);
-	(number(Item2),Type=number);
-	(string(Item2),Type=string);
-	(var(Item2),Type=variable)),
+	((atom(Item2),Type=[n,atom]);
+	(number(Item2),Type=[n,number]);
+	(string(Item2),Type=[n,string]);
+	(var(Item2),Type=[n,variable])), %% ***
 	Label=[Item2,Type,Range,ItemNumber,Position1],
 	append(ItemLabels1,[Label],ItemLabels3),
 	Position2 is Position1 + 1,
@@ -157,7 +159,7 @@ findprogram(_FunctionName,Relations,FunctionNumber,Program,Program) :-
 	!.
 findprogram(FunctionName,Relations,FunctionNumber1,Program1,Program2) :-
 	%%findprogram2(Relations,FunctionNumber1,1,[],Vars,[],Header,[],Body1),
-        input1arguments(Relations,FunctionNumber1,1,[[undef,"`"]],Vars1,[],Header1,[],TypeStatements1),
+        input1arguments(Relations,FunctionNumber1,1,[[undef,[v,"`"]]],Vars1,[],Header1,[],TypeStatements1),
 	inputs2arguments(Relations,FunctionNumber1,1,Vars1,Vars2,[],Header2,[],TypeStatements2),
 	deleteduplicates2(TypeStatements1,TypeStatements2,TypeStatements3),
 	outputarguments(Relations,FunctionNumber1,1,Vars2,Vars3,[],Header3),
@@ -176,7 +178,7 @@ input1arguments(Relations,FunctionNumber,Position1,Vars1,Vars2,Header1,Header2,T
         var(Item1,Var,Vars1,Vars3),
         append(Header1,[Var],Header3),
 	Position2 is Position1 + 1,
-	append(TypeStatements1,[[Type1,Var]],TypeStatements3), %% add to lpi
+	append(TypeStatements1,[[Type1,[Var]]],TypeStatements3), %% add to lpi
 	input1arguments(Relations,FunctionNumber,Position2,Vars3,Vars2,Header3,Header2,TypeStatements3,TypeStatements2).
 input1arguments(Relations,FunctionNumber,Position1,Vars1,Vars2,Header1,Header2,TypeStatements1,TypeStatements2) :-
 	not((member([[Item1,Type1,input1,FunctionNumber,Position1],[Item1,_Type2,_Range2,FunctionNumber,_Position2]],Relations);member([[Item1,_Type22,_Range22,FunctionNumber,_Position22],[Item1,Type1,input1,FunctionNumber,Position1]],Relations))),
@@ -190,7 +192,7 @@ inputs2arguments(Relations,FunctionNumber,Position1,Vars1,Vars2,Header1,Header2,
 	var(Item1,Var,Vars1,Vars3),
         append(Header1,[Var],Header3),
         Position2 is Position1 + 1,
-        append(TypeStatements1,[[Type1,Var]],TypeStatements3),
+        append(TypeStatements1,[[Type1,[Var]]],TypeStatements3),
         inputs2arguments(Relations,FunctionNumber,Position2,Vars3,Vars2,Header3,Header2,TypeStatements3,TypeStatements2).
 inputs2arguments(Relations,FunctionNumber,Position1,Vars1,Vars2,Header1,Header2,TypeStatements1,TypeStatements2) :-
         not((member([[Item1,Type1,inputs2,FunctionNumber,Position1],[Item1,_Type2,_Range2,FunctionNumber,_Position2]],Relations);member([[Item1,_Type22,_Range22,FunctionNumber,_Position22],[Item1,Type1,inputs2,FunctionNumber,Position1]],Relations))),
@@ -224,46 +226,54 @@ extrasarguments(Relations,FunctionNumber,Position1,Vars1,Vars2,Header1,Header2) 
         Position2 is Position1 + 1,
         extrasarguments(Relations,FunctionNumber,Position2,Vars1,Vars2,Header3,Header2).
 
-makebasecase(FunctionName,Code) :-
-	Code=[[FunctionName,[[],inputs2,output,output]]].
+makebasecase(FunctionName,Code) :- %****
+	Code=[[FunctionName,[[],[v,inputs2],[v,output],[v,output]]]].
 makecode(FunctionName,Header1,TypeStatements1,TypeStatements2,Header2,Header3,Code) :-
+	append([[v,head]],[Header1],List1),
+	append([[v,inputs21]],[Header2],List2),
+	append([[v,item1]],[Header3],List3),
 	Code=[
-		[FunctionName,[input1,inputs2,inputs3,output],(:-),
+		[FunctionName,[[v,input1],[v,inputs2],[v,inputs3],[v,output]],":-",
 		[
-			[head,input1,head],
-			[tail,input1,tail],
-			[head=Header1],
+			[[n,head],[[v,input1],[v,head]]],
+			[[n,tail],[[v,input1],[v,tail]]],
+			[[n,equals1],List1],
 			TypeStatements1,
-			[member,inputs21,inputs2], %% brackets here in new lpi
-			[inputs21=Header2],
+			[[n,member2],[[v,inputs2],[v,inputs21]]], %% brackets here in new lpi
+			[[n,equals1],List2],
 			TypeStatements2,
-			[item1=Header3],
-			[append,inputs3,item1,item2], %% brackets here in new lpi
-			[FunctionName,[tail,inputs2,item2,output]]
-		]
-		]
-	].
+			[[n,equals2],List3],
+			[[n,append],[[v,inputs3],[v,item1],[v,item2]]], %% brackets here in new lpi
+			[FunctionName,[[v,tail],[v,inputs2],[v,item2],[v,output]]
+]]
+		
+	]].
 makebasecase2(FunctionName,Code) :-
-        Code=[[FunctionName,[[],inputs2,extras,extras,output,output]]].
+        Code=[[FunctionName,[[],[v,inputs2],[v,extras],[v,extras],[v,output],[v,output]]]].
 makecode(FunctionName,Header1,TypeStatements1,TypeStatements2,Header2,Header3,Header4,Code) :-
+	append([[v,head]],[Header1],List1),
+	append([[v,inputs21]],[Header2],List2),
+	append([[v,item1]],[Header3],List3),
+	append([[v,item3]],[Header4],List4),
         Code=[
-                [FunctionName,[input1,inputs2,extras1,extras2,inputs3,output],(:-),
+                [FunctionName,[[v,input1],[v,inputs2],[v,extras1],[v,extras2],[v,inputs3],[v,output]],":-",
                 [
-                        [head,input1,head],
-                        [tail,input1,tail],
-                        [head=Header1],
+                        [[n,head],[[v,input1],[v,head]]],
+                        [[n,tail],[[v,input1],[v,tail]]],
+                        [[n,equals1],List1],
 			TypeStatements1,
-                        [member,inputs21,inputs2], %% brackets here in new lpi
-                        [inputs21=Header2],
+                        [[n,member2],[[v,inputs2],[v,inputs21]]], %% brackets here in new lpi
+                        [[n,equals1],List2],
 			TypeStatements2,
-                        [item1=Header3],
+                        [[n,equals2],List3],
 			TypeStatements2,
-                        [append,inputs3,item1,item2], %% brackets here in new lpi
-			[item3=Header4],
-			[append,extras1,item3,extras2],
-                        [FunctionName,[tail,inputs2,item2,output]]
+                        [[n,append],[[v,inputs3],[v,item1],[v,item2]]], %% brackets here in new lpi
+			[[n,equals2],List4], %% equals2 ?
+			[[n,append],[[v,extras1],[v,item3],[v,extras2]]],
+                        [FunctionName,[[v,tail],[v,inputs2],[v,item2],[v,output]]
+]
                 ]
-                ]
+            ]
         ].
 
 findprogram2(Relations,FunctionNumber,ArgumentNumber1,Vars1,Vars2,Header1,Header2,Body1,Body2) :-
@@ -274,16 +284,17 @@ findprogram2(Relations,FunctionNumber,ArgumentNumber1,Vars1,Vars2,Header1,Header
 	optimisecode(**/
 var(Item,Var,Vars,Vars) :-
 	member([Item,Var],Vars).
-var(Item1,Var1,Vars1,Vars2) :-
+var(Item1,Var1A,Vars1,Vars2) :-
 	length(Vars1,Vars1Length1),
 	Vars1Length2 is Vars1Length1-1,
 	length(Vars3,Vars1Length2),
-	append(Vars3,[[_Item2,Var2]],Vars1),
+	append(Vars3,[[_Item2,[v,Var2]]],Vars1),
 	char_code(Var2,Var2Code1),
 	Var2Code2 is Var2Code1 + 1,
 	Var2Code2 =< 122,
 	char_code(Var1,Var2Code2),
-	append(Vars1,[[Item1,Var1]],Vars2).
+	Var1A=[v,Var1],
+	append(Vars1,[[Item1,[v,Var1]]],Vars2).
 	
 /**
 
