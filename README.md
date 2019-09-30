@@ -9,7 +9,7 @@ Please read the following instructions on how to install the project on your com
 
 Please download and install SWI-Prolog for your machine at https://www.swi-prolog.org/build/.
 
-(For later commits) please download Lucian Green's List Prolog Interpreter Repository at https://github.com/luciangreen/listprologinterpreter.
+Please download Lucian Green's List Prolog Interpreter Repository at https://github.com/luciangreen/listprologinterpreter.
 
 # Installing
 
