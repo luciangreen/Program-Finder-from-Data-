@@ -14,7 +14,11 @@ Please download Lucian Green's List Prolog Interpreter Repository at https://git
 
 # Installation from List Prolog Package Manager (LPPM)
 
-* Optionally, you can install from LPPM by installing <a href="https://www.swi-prolog.org/build/">SWI-Prolog</a> for your machine, downloading the <a href="https://github.com/luciangreen/List-Prolog-Package-Manager">LPPM Repository</a>, loading LPPM with `['lppm'].` then installing the package by running `lppm_install("luciangreen","Program-Finder-from-Data-").`.
+* Optionally, you can install from LPPM by installing <a href="https://www.swi-prolog.org/build/">SWI-Prolog</a> for your machine, downloading the <a href="https://github.com/luciangreen/List-Prolog-Package-Manager">LPPM Repository</a>,
+```
+git clone https://github.com/luciangreen/List-Prolog-Package-Manager.git
+```
+loading LPPM with `['lppm'].` then installing the package by running `lppm_install("luciangreen","Program-Finder-from-Data-").`.
 
 # Installing
 
