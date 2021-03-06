@@ -162,6 +162,7 @@ findprogram(FunctionName,Relations,FunctionNumber1,Program1,Program2) :-
         input1arguments(Relations,FunctionNumber1,1,[[undef,[v,"`"]]],Vars1,[],Header1,[],TypeStatements1),
 	inputs2arguments(Relations,FunctionNumber1,1,Vars1,Vars2,[],Header2,[],TypeStatements2),
 	deleteduplicates2(TypeStatements1,TypeStatements2,TypeStatements3),
+	%trace,
 	outputarguments(Relations,FunctionNumber1,1,Vars2,Vars3,[],Header3),
         extrasarguments(Relations,FunctionNumber1,1,Vars3,_Vars4,[],Header4),
 	(not(Header4=[])->
@@ -230,7 +231,7 @@ makebasecase(FunctionName,Code) :- %****
 	Code=[[FunctionName,[[],[v,inputs2],[v,output],[v,output]]]].
 makecode(FunctionName,Header1,TypeStatements1,TypeStatements2,Header2,Header3,Code) :-
 	append([[v,head]],[Header1],List1),
-	append([[v,inputs21]],[Header2],List2),
+	append([[v,head1]],[Header2],List2),
 	append([[v,item1]],[Header3],List3),
 	Code=[
 		[FunctionName,[[v,input1],[v,inputs2],[v,inputs3],[v,output]],":-",
@@ -239,13 +240,15 @@ makecode(FunctionName,Header1,TypeStatements1,TypeStatements2,Header2,Header3,Co
 			[[n,tail],[[v,input1],[v,tail]]],
 			[[n,equals1],List1],
 			TypeStatements1,
-			[[n,member2],[[v,inputs2],[v,inputs21]]], %% brackets here in new lpi
+			%[[n,member2],[[v,inputs2],[v,inputs21]]], %% brackets here in new lpi
+			[[n,head],[[v,inputs2],[v,head1]]],
+			[[n,tail],[[v,inputs2],[v,tail1]]],
 			[[n,equals1],List2],
 			TypeStatements2,
 			[[n,equals2],List3],
 			[[n,wrap],[[v,item1],[v,item1a]]],
 			[[n,append],[[v,inputs3],[v,item1a],[v,item2]]], %% brackets here in new lpi
-			[FunctionName,[[v,tail],[v,inputs2],[v,item2],[v,output]]
+			[FunctionName,[[v,tail],[v,tail1],[v,item2],[v,output]]
 ]]
 		
 	]].
@@ -253,7 +256,7 @@ makebasecase2(FunctionName,Code) :-
         Code=[[FunctionName,[[],[v,inputs2],[v,extras],[v,extras],[v,output],[v,output]]]].
 makecode(FunctionName,Header1,TypeStatements1,TypeStatements2,Header2,Header3,Header4,Code) :-
 	append([[v,head]],[Header1],List1),
-	append([[v,inputs21]],[Header2],List2),
+	append([[v,head1]],[Header2],List2),
 	append([[v,item1]],[Header3],List3),
 	append([[v,item3]],[Header4],List4),
         Code=[
@@ -263,7 +266,9 @@ makecode(FunctionName,Header1,TypeStatements1,TypeStatements2,Header2,Header3,He
                         [[n,tail],[[v,input1],[v,tail]]],
                         [[n,equals1],List1],
 			TypeStatements1,
-                        [[n,member2],[[v,inputs2],[v,inputs21]]], %% brackets here in new lpi
+                        %[[n,member2],[[v,inputs2],[v,inputs21]]], %% brackets here in new lpi
+                        [[n,head],[[v,inputs2],[v,head1]]],
+                        [[n,tail],[[v,inputs2],[v,tail1]]],
                         [[n,equals1],List2],
 			TypeStatements2,
                         [[n,equals2],List3],
@@ -272,7 +277,7 @@ makecode(FunctionName,Header1,TypeStatements1,TypeStatements2,Header2,Header3,He
                         [[n,append],[[v,inputs3],[v,item1a],[v,item2]]], %% brackets here in new lpi
 			[[n,equals2],List4],
 			[[n,append],[[v,extras1],[v,item3],[v,extras2]]],
-                        [FunctionName,[[v,tail],[v,inputs2],[v,item2],[v,output]]
+                        [FunctionName,[[v,tail],[v,tail1],[v,item2],[v,output]]
 ]
                 ]
             ]

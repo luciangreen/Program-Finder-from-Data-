@@ -30,7 +30,7 @@ In the SWI-Prolog environment, enter the following to load the algorithm:
 
 * Running the algorithm
 To generate an algorithm:
-`Input1=[["n","a"]],Inputs2=[["a",5]] ,Output=[["n", 5]] ,programfinder(Input1,Inputs2,Output,Extras,Program),writeln(Program),interpret(on,[[n,function],[Input1,Inputs2,[],[v,result]]],Program,Result).`    
+`Input1=[["n","a"]],Inputs2=[["a",5]] ,Output=[["n", 5]] ,programfinder(Input1,Inputs2,Output,Extras,Program),writeln(Program),international_interpret([lang,"en"],on,[[n,function],[Input1,Inputs2,[],[v,result]]],Program,Result).`    
 
 # Versioning
 
