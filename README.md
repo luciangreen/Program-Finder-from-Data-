@@ -7,25 +7,30 @@ Please read the following instructions on how to install the project on your com
 
 # Prerequisites
 
-Please download and install SWI-Prolog for your machine at https://www.swi-prolog.org/build/.
+* Please download and install SWI-Prolog for your machine at `https://www.swi-prolog.org/build/`.
 
-Please download Lucian Green's List Prolog Interpreter Repository at https://github.com/luciangreen/listprologinterpreter.
+# 1. Install manually
 
+Download <a href="http://github.com/luciangreen/Program-Finder-from-Data-/">this repository</a>, the <a href="https://github.com/luciangreen/listprologinterpreter">List Prolog Interpreter Repository</a>.
 
-# Installation from List Prolog Package Manager (LPPM)
+# 2. Or Install from List Prolog Package Manager (LPPM)
 
-* Optionally, you can install from LPPM by installing <a href="https://www.swi-prolog.org/build/">SWI-Prolog</a> for your machine, downloading the <a href="https://github.com/luciangreen/List-Prolog-Package-Manager">LPPM Repository</a>,
+* Download the <a href="https://github.com/luciangreen/List-Prolog-Package-Manager">LPPM Repository</a>:
+
 ```
 git clone https://github.com/luciangreen/List-Prolog-Package-Manager.git
 cd List-Prolog-Package-Manager
 swipl
+['lppm'].
+lppm_install("luciangreen","Program-Finder-from-Data-")
+halt
 ```
-loading LPPM with `['lppm'].` then installing the package by running `lppm_install("luciangreen","Program-Finder-from-Data-").`.
 
-# Installing
+# Running
 
-* Download the repository to your machine.
-In the SWI-Prolog environment, enter the following to load the algorithm:
+* In Shell:
+`cd Program-Finder-from-Data-`
+`swipl`
 `['programfinder'].`
 
 * Running the algorithm
