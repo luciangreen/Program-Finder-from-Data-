@@ -25,6 +25,7 @@ cd List-Prolog-Package-Manager
 swipl
 ['lppm'].
 lppm_install("luciangreen","Program-Finder-from-Data-").
+../
 halt
 ```
 
